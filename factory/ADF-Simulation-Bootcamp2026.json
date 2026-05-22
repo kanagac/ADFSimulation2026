@@ -1,0 +1,15 @@
+{
+	"name": "ADF-Simulation-Bootcamp2026",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "southindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "0a4662ca-f090-4096-bc0e-7a8333d962e4",
+		"tenantId": "17dcec91-66ec-4c4b-a988-473694df546c"
+	}
+}
