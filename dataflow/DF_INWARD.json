@@ -1,0 +1,57 @@
+{
+	"name": "DF_INWARD",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "cleansing"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Billed Carrier code} as long,",
+				"          {Carrier code} as long,",
+				"          {Ticket no} as long,",
+				"          {Coupon no} as long,",
+				"          {Billed date} as date,",
+				"          Stage as long,",
+				"          {Billed currency} as string,",
+				"          {Billed coupon amount} as long,",
+				"          {Billed commission amount} as double,",
+				"          {Billed discount amout} as long,",
+				"          {Accepted coupon amount} as double,",
+				"          {Accepted Comission amount} as double,",
+				"          {Accepted discount amount} as double,",
+				"          {Rejected coupon amount} as double,",
+				"          {Rejected commission amount} as double,",
+				"          {Rejected discount amount} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'select * from inward \\n\\nwhere [Ticket no] \\n\\nin  \\n\\n( \\n\\nselect [Ticket Number] from sales \\n\\ngroup by [Ticket Number] \\n\\nhaving count(*) =1 \\n\\n) \\n ',",
+				"     format: 'query') ~> source",
+				"source derive({Billed Carrier code} = coalesce({Billed Carrier code},0),",
+				"          {Carrier code} = coalesce({Carrier code},0),",
+				"          {Ticket no} = coalesce({Ticket no},0),",
+				"          {Coupon no} = coalesce({Coupon no},0),",
+				"          {Billed date} = coalesce({Billed date}, toDate('1990-01-01')),",
+				"          Stage = coalesce(Stage,0),",
+				"          {Billed currency} = coalesce({Billed currency},'NA'),",
+				"          {Billed coupon amount} = coalesce({Billed coupon amount},0.0),",
+				"          {Billed commission amount} = ERROR_FUNCTION('')) ~> cleansing"
+			]
+		}
+	}
+}

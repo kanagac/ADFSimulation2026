@@ -19,9 +19,6 @@
 						"referenceName": "DF_Airport",
 						"type": "DataFlowReference",
 						"datasetParameters": {
-							"source": {
-								"TableName": "Airport"
-							},
 							"sink": {
 								"FileName": "Airport.csv"
 							}
