@@ -1,0 +1,62 @@
+{
+	"name": "DF_Inward",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Server_StarAir",
+						"type": "DatasetReference"
+					},
+					"name": "SourceInward"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DF_Tgt_Blob_StarAir",
+						"type": "DatasetReference"
+					},
+					"name": "TargetInward"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedInward"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Billed Carrier code} as long,",
+				"          {Carrier code} as long,",
+				"          {Ticket no} as long,",
+				"          {Coupon no} as long,",
+				"          {Billed date} as date,",
+				"          Stage as long,",
+				"          {Billed currency} as string,",
+				"          {Billed coupon amount} as long,",
+				"          {Billed commission amount} as double,",
+				"          {Billed discount amout} as long,",
+				"          {Accepted coupon amount} as double,",
+				"          {Accepted Comission amount} as double,",
+				"          {Accepted discount amount} as double,",
+				"          {Rejected coupon amount} as double,",
+				"          {Rejected commission amount} as double,",
+				"          {Rejected discount amount} as double,",
+				"          IsActive as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourceInward",
+				"SourceInward derive(each(match(type=='string'), $$ = iif(isNull($$), toString('UNK'), toString($$))),",
+				"          each(match(type=='int'), $$ = coalesce($$,toInteger(0)))) ~> DerivedInward",
+				"DerivedInward sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> TargetInward"
+			]
+		}
+	}
+}
