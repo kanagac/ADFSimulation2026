@@ -1,0 +1,47 @@
+{
+	"name": "DF_Currency",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Server_StarAir",
+						"type": "DatasetReference"
+					},
+					"name": "SourceCurrency"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DF_Tgt_Blob_StarAir",
+						"type": "DatasetReference"
+					},
+					"name": "TargetCurrency"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumnCreditCard"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {CC Company} as string,",
+				"          Description as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourceCurrency",
+				"SourceCurrency derive(each(match(type=='string'), $$ = iif(isNull($$), toString('UNK'), toString($$))),",
+				"          each(match(type=='int'), $$ = coalesce($$,toInteger(0)))) ~> DerivedColumnCreditCard",
+				"DerivedColumnCreditCard sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> TargetCurrency"
+			]
+		}
+	}
+}
