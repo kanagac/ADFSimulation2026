@@ -1,0 +1,51 @@
+{
+	"name": "DF_ExchangeRate",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Server_StarAir",
+						"type": "DatasetReference"
+					},
+					"name": "SourceExchangeRate"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DF_Tgt_Blob_StarAir",
+						"type": "DatasetReference"
+					},
+					"name": "TargetExchangeRate"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumnExchangeRate"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {From Currency} as string,",
+				"          {To Currency} as string,",
+				"          {Rate Type} as string,",
+				"          {Exchange Rate} as string,",
+				"          Effective_date_from as string,",
+				"          Effective_date_to as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourceExchangeRate",
+				"SourceExchangeRate derive(each(match(type=='string'), $$ = iif(isNull($$), toString('UNK'), toString($$))),",
+				"          each(match(type=='int'), $$ = coalesce($$,toInteger(0)))) ~> DerivedColumnExchangeRate",
+				"DerivedColumnExchangeRate sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> TargetExchangeRate"
+			]
+		}
+	}
+}
