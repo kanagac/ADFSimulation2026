@@ -23,7 +23,7 @@
 			],
 			"transformations": [
 				{
-					"name": "DerivedColumnCreditCard"
+					"name": "DerivedColumnCurrency"
 				}
 			],
 			"scriptLines": [
@@ -36,8 +36,8 @@
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> SourceCurrency",
 				"SourceCurrency derive(each(match(type=='string'), $$ = iif(isNull($$), toString('UNK'), toString($$))),",
-				"          each(match(type=='int'), $$ = coalesce($$,toInteger(0)))) ~> DerivedColumnCreditCard",
-				"DerivedColumnCreditCard sink(allowSchemaDrift: true,",
+				"          each(match(type=='int'), $$ = coalesce($$,toInteger(0)))) ~> DerivedColumnCurrency",
+				"DerivedColumnCurrency sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> TargetCurrency"
