@@ -1,0 +1,34 @@
+{
+	"name": "DF_CreditCard",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Server_StarAir",
+						"type": "DatasetReference"
+					},
+					"name": "CreditCard"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "DerivedColumnCreditCard"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {CC Company} as string,",
+				"          Description as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> CreditCard",
+				"CreditCard derive({type=='string'} = ERROR_FUNCTION('')) ~> DerivedColumnCreditCard"
+			]
+		}
+	}
+}
