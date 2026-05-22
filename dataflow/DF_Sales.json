@@ -1,0 +1,69 @@
+{
+	"name": "DF_Sales",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Server_StarAir",
+						"type": "DatasetReference"
+					},
+					"name": "SourceSales"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DF_Tgt_Blob_StarAir",
+						"type": "DatasetReference"
+					},
+					"name": "TargetSales"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumnSales"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Carrier Code} as long,",
+				"          {Ticket Number} as long,",
+				"          {Sales Currency} as string,",
+				"          {Ticket Amount} as long,",
+				"          {Agent Code} as long,",
+				"          {Agent City Code} as string,",
+				"          {Sale Date} as date,",
+				"          {Commission Amount} as double,",
+				"          {Discount Amount} as long,",
+				"          {TAX Amount} as double,",
+				"          {Tax Code 1} as string,",
+				"          {Tax 1 Amount} as double,",
+				"          {Tax code 2} as string,",
+				"          {Tax 2 Amount} as double,",
+				"          {Tax Code 3} as string,",
+				"          {Tax 3 Amount} as double,",
+				"          {FOP 1 Code} as string,",
+				"          {FOP 1 Amount} as double,",
+				"          {FOP 2} as string,",
+				"          {FOP 2 Amount} as double,",
+				"          {FOP 3} as string,",
+				"          {FOP 3 Amount} as double,",
+				"          {Flight year Quarter} as string,",
+				"          IsActive as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourceSales",
+				"SourceSales derive(each(match(type=='string'), $$ = iif(isNull($$), toString('UNK'), toString($$))),",
+				"          each(match(type=='int'), $$ = coalesce($$,toInteger(0)))) ~> DerivedColumnSales",
+				"DerivedColumnSales sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> TargetSales"
+			]
+		}
+	}
+}
