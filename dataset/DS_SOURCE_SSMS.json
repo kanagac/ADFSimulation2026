@@ -1,0 +1,23 @@
+{
+	"name": "DS_SOURCE_SSMS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SOURCE_SSMS_IN1720",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"P_TABLENAME": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"table": {
+				"value": "@dataset().P_TABLENAME",
+				"type": "Expression"
+			}
+		}
+	}
+}

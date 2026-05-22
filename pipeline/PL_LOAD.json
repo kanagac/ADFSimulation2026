@@ -1,0 +1,42 @@
+{
+	"name": "PL_LOAD",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data_flow",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_SOURCE",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"P_TABLENAME": "Taxtype"
+							},
+							"sink1": {
+								"P_CONTAINER": "bronze",
+								"P_DIRECTORY": "Team 1",
+								"P_FILENAME": "Taxtype"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
