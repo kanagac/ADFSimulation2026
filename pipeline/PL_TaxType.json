@@ -1,0 +1,40 @@
+{
+	"name": "PL_TaxType",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_TaxType",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_TaxType",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"SourceTaxType": {
+								"tablename": "TaxType"
+							},
+							"TargetTaxType": {
+								"tablename": "TaxType"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
