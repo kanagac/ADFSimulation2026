@@ -1,5 +1,5 @@
 {
-	"name": "PL_INJESTION",
+	"name": "PL_SALES_RAW",
 	"properties": {
 		"activities": [
 			{
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_RAW_DATA",
+						"referenceName": "DF_SALES_RAW",
 						"type": "DataFlowReference",
 						"datasetParameters": {
 							"Source": {
