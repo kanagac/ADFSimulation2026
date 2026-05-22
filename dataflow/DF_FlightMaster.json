@@ -1,0 +1,56 @@
+{
+	"name": "DF_FlightMaster",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Server_StarAir",
+						"type": "DatasetReference"
+					},
+					"name": "SourceFlightMaster"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DF_Tgt_Blob_StarAir",
+						"type": "DatasetReference"
+					},
+					"name": "TargetFlightMaster"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumnFlightMaster"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Flight_no as string,",
+				"          {Flight date} as string,",
+				"          {Frm Airport Code} as string,",
+				"          {To Airport Code} as string,",
+				"          {Flight Type} as string,",
+				"          {Flight Status} as string,",
+				"          First as string,",
+				"          Business as string,",
+				"          Economy as string,",
+				"          Tail_no as string,",
+				"          Carrier as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourceFlightMaster",
+				"SourceFlightMaster derive(each(match(type=='string'), $$ = iif(isNull($$), toString('UNK'), toString($$))),",
+				"          each(match(type=='int'), $$ = coalesce($$,toInteger(0)))) ~> DerivedColumnFlightMaster",
+				"DerivedColumnFlightMaster sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> TargetFlightMaster"
+			]
+		}
+	}
+}
