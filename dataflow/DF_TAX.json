@@ -1,0 +1,51 @@
+{
+	"name": "DF_TAX",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Cleansing"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Tax Code} as string,",
+				"          Description as string,",
+				"          {Country Code} as string,",
+				"          Type as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 derive({Tax Code} = coalesce({Tax Code},\"NA\"),",
+				"          Description = coalesce(Description,\"NA\"),",
+				"          {Country Code} = coalesce({Country Code},\"NA\"),",
+				"          Type = coalesce(Type,\"NA\")) ~> Cleansing",
+				"Cleansing sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}
