@@ -17,7 +17,15 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "DF_RAW_DATA",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"Source": {
+								"Table_Name": "Sales"
+							},
+							"Stage": {
+								"File": "Sales.csv"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,

@@ -7,10 +7,12 @@
 		},
 		"parameters": {
 			"Container": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "bronze"
 			},
 			"Folder": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "Team 2"
 			},
 			"File": {
 				"type": "string"
