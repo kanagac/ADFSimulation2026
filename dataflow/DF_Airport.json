@@ -1,0 +1,66 @@
+{
+	"name": "DF_Airport",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "sink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "cleansing"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {SL NO} as string,",
+				"          {Airport Code} as string,",
+				"          {Airport Name} as string,",
+				"          {City Code} as string,",
+				"          Country as string,",
+				"          {Country Code} as string,",
+				"          {Country Name} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source",
+				"source derive({SL NO} = coalesce({SL NO},'0'),",
+				"          {Airport Code} = coalesce({Airport Code},'NA'),",
+				"          {Airport Name} = coalesce({Airport Name},'NA'),",
+				"          {City Code} = coalesce({City Code},'NA'),",
+				"          Country = coalesce(Country,'NA'),",
+				"          {Country Code} = coalesce({Country Code},'NA'),",
+				"          {Country Name} = coalesce({Country Name},'NA')) ~> cleansing",
+				"cleansing sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          {SL NO},",
+				"          {Airport Code},",
+				"          {Airport Name},",
+				"          {City Code},",
+				"          Country,",
+				"          {Country Code},",
+				"          {Country Name}",
+				"     )) ~> sink"
+			]
+		}
+	}
+}
