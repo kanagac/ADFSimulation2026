@@ -1,13 +1,62 @@
 {
-	"name": "dataflow1",
+	"name": "DF_TicketMaster",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
-			"sources": [],
-			"sinks": [],
-			"transformations": [],
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
 			"scriptLines": [
-				""
+				"source(output(",
+				"          {Carrier Code} as long,",
+				"          {Ticket Number} as long,",
+				"          {Document type} as string,",
+				"          {Fare Currency} as string,",
+				"          {Ticket amount in Sale currency} as long,",
+				"          {Agent Code} as long,",
+				"          {Agent City Code} as string,",
+				"          {Sale Date} as date,",
+				"          {Commission Amount} as double,",
+				"          {Discount Amount} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 derive({Carrier Code} = coalesce({Carrier Code},0),",
+				"          {Ticket Number} = coalesce({Ticket Number},0),",
+				"          {Document type} = coalesce({Document type},'NA'),",
+				"          {Fare Currency} = coalesce({Fare Currency},'NA'),",
+				"          {Ticket amount in Sale currency} = coalesce({Ticket amount in Sale currency},0),",
+				"          {Agent Code} = coalesce({Agent Code},0),",
+				"          {Agent City Code} = coalesce({Agent City Code},'NA'),",
+				"          {Sale Date} = coalesce({Sale Date}, toDate('1990-01-01')),",
+				"          {Commission Amount} = coalesce({Commission Amount},0),",
+				"          {Discount Amount} = coalesce({Discount Amount},0)) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
