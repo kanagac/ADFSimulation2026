@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "DF_RAW_DATA",
+				"name": "DF_SALES_RAW",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
