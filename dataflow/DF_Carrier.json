@@ -1,0 +1,55 @@
+{
+	"name": "DF_Carrier",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "cleansing"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Airline Name} as string,",
+				"          {Carrier Code} as string,",
+				"          Len as integer,",
+				"          {Carrier Number} as integer,",
+				"          {Carrier Code Dup} as string,",
+				"          Country as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source",
+				"source derive({Airline Name} = coalesce({Airline Name},'NA'),",
+				"          {Carrier Code} = coalesce({Carrier Code},'NA'),",
+				"          Len = coalesce(Len,0),",
+				"          {Carrier Number} = coalesce({Carrier Number},0),",
+				"          {Carrier Code Dup} = coalesce({Carrier Code Dup},'NA'),",
+				"          Country = coalesce(Country,'NA')) ~> cleansing",
+				"cleansing sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

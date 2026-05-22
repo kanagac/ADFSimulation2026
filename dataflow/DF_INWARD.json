@@ -12,7 +12,15 @@
 					"name": "source"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "sink"
+				}
+			],
 			"transformations": [
 				{
 					"name": "cleansing"
@@ -49,8 +57,37 @@
 				"          {Billed date} = coalesce({Billed date}, toDate('1990-01-01')),",
 				"          Stage = coalesce(Stage,0),",
 				"          {Billed currency} = coalesce({Billed currency},'NA'),",
-				"          {Billed coupon amount} = coalesce({Billed coupon amount},0.0),",
-				"          {Billed commission amount} = ERROR_FUNCTION('')) ~> cleansing"
+				"          {Billed coupon amount} = coalesce({Billed coupon amount},0),",
+				"          {Billed commission amount} = coalesce({Billed commission amount},0.0),",
+				"          {Billed discount amout} = coalesce({Billed discount amout},0),",
+				"          {Accepted coupon amount} = coalesce({Accepted coupon amount},0.0),",
+				"          {Accepted Comission amount} = coalesce({Accepted Comission amount},0.0),",
+				"          {Accepted discount amount} = coalesce({Accepted discount amount},0.0),",
+				"          {Rejected coupon amount} = coalesce({Rejected coupon amount},0.0),",
+				"          {Rejected commission amount} = coalesce({Rejected commission amount},0.0),",
+				"          {Rejected discount amount} = coalesce({Rejected discount amount},0.0)) ~> cleansing",
+				"cleansing sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          {Billed Carrier code},",
+				"          {Carrier code},",
+				"          {Ticket no},",
+				"          {Coupon no},",
+				"          {Billed date},",
+				"          Stage,",
+				"          {Billed currency},",
+				"          {Billed coupon amount},",
+				"          {Billed commission amount},",
+				"          {Billed discount amout},",
+				"          {Accepted coupon amount},",
+				"          {Accepted Comission amount},",
+				"          {Accepted discount amount},",
+				"          {Rejected coupon amount},",
+				"          {Rejected commission amount},",
+				"          {Rejected discount amount}",
+				"     )) ~> sink"
 			]
 		}
 	}

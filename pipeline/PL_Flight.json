@@ -1,0 +1,40 @@
+{
+	"name": "PL_Flight",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow Flight",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Flight",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source": {
+								"TableName": "[FlightMaster]"
+							},
+							"sink": {
+								"FileName": "Flight.csv"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}

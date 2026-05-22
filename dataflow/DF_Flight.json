@@ -1,0 +1,65 @@
+{
+	"name": "DF_Flight",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "sink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "cleansing"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Flight_no as string,",
+				"          {Flight date} as string,",
+				"          {Frm Airport Code} as string,",
+				"          {To Airport Code} as string,",
+				"          {Flight Type} as string,",
+				"          {Flight Status} as string,",
+				"          First as string,",
+				"          Business as string,",
+				"          Economy as string,",
+				"          Tail_no as string,",
+				"          Carrier as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source",
+				"source derive(Flight_no = coalesce(Flight_no,'NA'),",
+				"          {Flight date} = coalesce({Flight date},'1990-01-01'),",
+				"          {Frm Airport Code} = coalesce({Frm Airport Code},'NA'),",
+				"          {To Airport Code} = coalesce({To Airport Code},'NA'),",
+				"          {Flight Type} = coalesce({Flight Type},'NA'),",
+				"          {Flight Status} = coalesce({Flight Status},'NA'),",
+				"          First = coalesce(First),",
+				"          Business = coalesce(Business,'NA'),",
+				"          Economy = coalesce(Economy,'NA'),",
+				"          Tail_no = coalesce(Tail_no,'NA'),",
+				"          Carrier = coalesce(Carrier,'NA')) ~> cleansing",
+				"cleansing sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink"
+			]
+		}
+	}
+}

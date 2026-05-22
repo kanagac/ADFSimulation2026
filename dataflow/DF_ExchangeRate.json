@@ -1,0 +1,55 @@
+{
+	"name": "DF_ExchangeRate",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TABLE",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "cleansing"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {From Currency} as string,",
+				"          {To Currency} as string,",
+				"          {Rate Type} as string,",
+				"          {Exchange Rate} as string,",
+				"          Effective_date_from as string,",
+				"          Effective_date_to as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 derive({From Currency} = coalesce({From Currency},'NA'),",
+				"          {To Currency} = coalesce({To Currency},'NA'),",
+				"          {Rate Type} = coalesce({Rate Type},'NA'),",
+				"          {Exchange Rate} = coalesce({Exchange Rate},'0'),",
+				"          Effective_date_from = coalesce(Effective_date_from,'1990-01-01'),",
+				"          Effective_date_to = coalesce(Effective_date_to,'1990-01-01')) ~> cleansing",
+				"cleansing sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}
