@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "DF_Country",
+				"name": "DF_Currency",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -19,11 +19,11 @@
 						"referenceName": "DF_ADLS",
 						"type": "DataFlowReference",
 						"datasetParameters": {
-							"SourceCountry": {
-								"tablename": "Country"
+							"SourceCurrency": {
+								"tablename": "Currency"
 							},
-							"TargetCountry": {
-								"tablename": "Country"
+							"TargetCurrency": {
+								"tablename": "Currency"
 							}
 						}
 					},

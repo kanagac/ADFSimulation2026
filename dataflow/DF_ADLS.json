@@ -9,7 +9,7 @@
 						"referenceName": "DS_SOURCE_IN1733",
 						"type": "DatasetReference"
 					},
-					"name": "SourceCountry"
+					"name": "SourceCurrency"
 				}
 			],
 			"sinks": [
@@ -18,7 +18,7 @@
 						"referenceName": "DS_TARGET_IN1733",
 						"type": "DatasetReference"
 					},
-					"name": "TargetCountry"
+					"name": "TargetCurrency"
 				}
 			],
 			"transformations": [
@@ -28,20 +28,19 @@
 			],
 			"scriptLines": [
 				"source(output(",
-				"          {Country Code } as string,",
-				"          {Country Name} as string,",
-				"          {Country Number} as string",
+				"          {Currency Code} as string,",
+				"          Description as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> SourceCountry",
-				"SourceCountry derive(each(match(type == 'integer'), $$ = coalesce($$,toInteger(0))),",
+				"     format: 'table') ~> SourceCurrency",
+				"SourceCurrency derive(each(match(type == 'integer'), $$ = coalesce($$,toInteger(0))),",
 				"          each(match(type == 'string'), $$ = iif(isNull($$), toString('NA'), toString($$)))) ~> TransformatioNullhandling",
 				"TransformatioNullhandling sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> TargetCountry"
+				"     skipDuplicateMapOutputs: true) ~> TargetCurrency"
 			]
 		}
 	}
