@@ -1,0 +1,17 @@
+{
+	"name": "LS_SQL_SERVER",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "systechtraining.database.windows.net",
+			"database": "Simulation_Project",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "B12026_GArumuga",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDRDQkJBNkYxLUJFNUYtNDNCQy05QjhELTU0RjgxNEYzMTZFRV82ZTc5NjliYS1iYTcwLTQ0MzYtOWY0YS1jNjRmZDg2MjU5ZGMiDQp9"
+		}
+	}
+}
