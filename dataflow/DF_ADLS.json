@@ -1,0 +1,42 @@
+{
+	"name": "DF_ADLS",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SOURCE_IN1733",
+						"type": "DatasetReference"
+					},
+					"name": "SourceCity"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_TARGET_IN1733",
+						"type": "DatasetReference"
+					},
+					"name": "TargetCity"
+				}
+			],
+			"transformations": [
+				{
+					"name": "TransformatioNullhandling"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourceCity",
+				"SourceCity derive() ~> TransformatioNullhandling",
+				"TransformatioNullhandling sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> TargetCity"
+			]
+		}
+	}
+}
