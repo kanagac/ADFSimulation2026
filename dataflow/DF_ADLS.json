@@ -9,7 +9,7 @@
 						"referenceName": "DS_SOURCE_IN1733",
 						"type": "DatasetReference"
 					},
-					"name": "SourceCity"
+					"name": "SourceCountry"
 				}
 			],
 			"sinks": [
@@ -18,7 +18,7 @@
 						"referenceName": "DS_TARGET_IN1733",
 						"type": "DatasetReference"
 					},
-					"name": "TargetCity"
+					"name": "TargetCountry"
 				}
 			],
 			"transformations": [
@@ -27,15 +27,21 @@
 				}
 			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
+				"source(output(",
+				"          {Country Code } as string,",
+				"          {Country Name} as string,",
+				"          {Country Number} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> SourceCity",
-				"SourceCity derive() ~> TransformatioNullhandling",
+				"     format: 'table') ~> SourceCountry",
+				"SourceCountry derive(each(match(type == 'integer'), $$ = coalesce($$,toInteger(0))),",
+				"          each(match(type == 'string'), $$ = iif(isNull($$), toString('NA'), toString($$)))) ~> TransformatioNullhandling",
 				"TransformatioNullhandling sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> TargetCity"
+				"     skipDuplicateMapOutputs: true) ~> TargetCountry"
 			]
 		}
 	}

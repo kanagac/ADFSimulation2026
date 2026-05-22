@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "DF_CITY",
+				"name": "DF_Country",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -19,11 +19,11 @@
 						"referenceName": "DF_ADLS",
 						"type": "DataFlowReference",
 						"datasetParameters": {
-							"SourceCity": {
-								"tablename": "City"
+							"SourceCountry": {
+								"tablename": "Country"
 							},
-							"TargetCity": {
-								"tablename": "City"
+							"TargetCountry": {
+								"tablename": "Country"
 							}
 						}
 					},
