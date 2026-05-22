@@ -1,0 +1,40 @@
+{
+	"name": "PL_FlightMaster",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_FlightMaster",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_FlightMaster",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"SourceFlightMaster": {
+								"tablename": "FlightMaster"
+							},
+							"TargetFlightMaster": {
+								"tablename": "FlightMaster"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
