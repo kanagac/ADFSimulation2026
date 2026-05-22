@@ -6,14 +6,6 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"Container": {
-				"type": "string",
-				"defaultValue": "bronze"
-			},
-			"Folder": {
-				"type": "string",
-				"defaultValue": "Team 2"
-			},
 			"File": {
 				"type": "string"
 			}
@@ -27,14 +19,8 @@
 					"value": "@dataset().File",
 					"type": "Expression"
 				},
-				"folderPath": {
-					"value": "@dataset().Folder",
-					"type": "Expression"
-				},
-				"container": {
-					"value": "@dataset().Container",
-					"type": "Expression"
-				}
+				"folderPath": "Team 2",
+				"container": "bronze"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
