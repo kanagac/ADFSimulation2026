@@ -6,12 +6,6 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"container": {
-				"type": "string"
-			},
-			"directory": {
-				"type": "string"
-			},
 			"tablename": {
 				"type": "string"
 			}
@@ -25,14 +19,8 @@
 					"value": "@dataset().tablename",
 					"type": "Expression"
 				},
-				"folderPath": {
-					"value": "@dataset().directory",
-					"type": "Expression"
-				},
-				"container": {
-					"value": "@dataset().container",
-					"type": "Expression"
-				}
+				"folderPath": "Team 4",
+				"container": "bronze"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
