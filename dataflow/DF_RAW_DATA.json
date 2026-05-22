@@ -1,0 +1,90 @@
+{
+	"name": "DF_RAW_DATA",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_SERVER",
+						"type": "DatasetReference"
+					},
+					"name": "Source"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "Stage"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Cleansing"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Carrier Code} as long,",
+				"          {Ticket Number} as long,",
+				"          {Sales Currency} as string,",
+				"          {Ticket Amount} as long,",
+				"          {Agent Code} as long,",
+				"          {Agent City Code} as string,",
+				"          {Sale Date} as date,",
+				"          {Commission Amount} as double,",
+				"          {Discount Amount} as long,",
+				"          {TAX Amount} as double,",
+				"          {Tax Code 1} as string,",
+				"          {Tax 1 Amount} as double,",
+				"          {Tax code 2} as string,",
+				"          {Tax 2 Amount} as double,",
+				"          {Tax Code 3} as string,",
+				"          {Tax 3 Amount} as double,",
+				"          {FOP 1 Code} as string,",
+				"          {FOP 1 Amount} as double,",
+				"          {FOP 2} as string,",
+				"          {FOP 2 Amount} as double,",
+				"          {FOP 3} as string,",
+				"          {FOP 3 Amount} as double,",
+				"          {Flight year Quarter} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'select * from Sales \\nwhere [Ticket Number] in \\n( \\nselect [Ticket Number] from sales \\ngroup by [Ticket Number] \\nhaving count(*) = 1 \\n) ',",
+				"     format: 'query') ~> Source",
+				"Source derive({Carrier Code} = isNull(0),",
+				"          {Ticket Number} = isNull(0),",
+				"          {Sales Currency} = isNull('NA'),",
+				"          {Ticket Amount} = isNull(0),",
+				"          {Agent Code} = isNull(0),",
+				"          {Agent City Code} = isNull('NA'),",
+				"          {Sale Date} = isNull('1990-01-01'),",
+				"          {Commission Amount} = isNull(0),",
+				"          {Discount Amount} = isNull(0),",
+				"          {TAX Amount} = isNull(0),",
+				"          {Tax Code 1} = isNull('NA'),",
+				"          {Tax 1 Amount} = isNull(0),",
+				"          {Tax code 2} = isNull('NA'),",
+				"          {Tax 2 Amount} = isNull(0),",
+				"          {Tax Code 3} = isNull('NA'),",
+				"          {Tax 3 Amount} = isNull(0),",
+				"          {FOP 1 Code} = isNull('NA'),",
+				"          {FOP 1 Amount} = isNull(0),",
+				"          {FOP 2} = isNull('NA'),",
+				"          {FOP 2 Amount} = isNull(0),",
+				"          {FOP 3} = isNull('NA'),",
+				"          {FOP 3 Amount} = isNull(0),",
+				"          {Flight year Quarter} = isNull('NA')) ~> Cleansing",
+				"Cleansing sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> Stage"
+			]
+		}
+	}
+}

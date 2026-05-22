@@ -1,0 +1,57 @@
+{
+	"name": "DS_SQL_SERVER",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_SERVER",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Table_Name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "Agent Code",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Agent Name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Agent Address",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Agent City",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Location Type",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Ctrl location",
+				"type": "nvarchar"
+			},
+			{
+				"name": "country",
+				"type": "nvarchar"
+			},
+			{
+				"name": "City",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": {
+				"value": "@dataset().Table_Name",
+				"type": "Expression"
+			}
+		}
+	}
+}
