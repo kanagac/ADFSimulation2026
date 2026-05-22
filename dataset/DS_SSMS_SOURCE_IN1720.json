@@ -1,0 +1,57 @@
+{
+	"name": "DS_SSMS_SOURCE_IN1720",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SSMS_SOURCE_IN1720",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"P_TABLE_NAME": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "Agent Code",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Agent Name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Agent Address",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Agent City",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Location Type",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Ctrl location",
+				"type": "nvarchar"
+			},
+			{
+				"name": "country",
+				"type": "nvarchar"
+			},
+			{
+				"name": "City",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": {
+				"value": "@dataset().P_TABLE_NAME",
+				"type": "Expression"
+			}
+		}
+	}
+}
