@@ -1,0 +1,71 @@
+{
+	"name": "DF_SRC",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SRC",
+						"type": "DatasetReference"
+					},
+					"name": "SRCCoupon"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_TGT",
+						"type": "DatasetReference"
+					},
+					"name": "SNKCoupon"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedCoupon"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Carrier Code} as long,",
+				"          {Ticket Number} as long,",
+				"          {Coupon Number} as long,",
+				"          {From Airport} as string,",
+				"          {To Airport} as string,",
+				"          {Coupon Status} as string,",
+				"          {Closed Carrier} as string,",
+				"          {Uplift Carrier} as string,",
+				"          {Flight no} as long,",
+				"          {Flight Date} as date,",
+				"          {Class of Travel} as string,",
+				"          {RBD Code} as string,",
+				"          {SPA ID} as string,",
+				"          {Codeshare ID} as string,",
+				"          {Fare Currency Code} as string,",
+				"          {Coupon Amount in Sale currency} as long,",
+				"          {Coupon commission in Sale Currency} as double,",
+				"          {Coupon discount in Sale Currency} as long,",
+				"          {Coupon amount in base currency} as double,",
+				"          {Coupon commission in Base Currency} as double,",
+				"          {Coupon discount in Base Currency} as double,",
+				"          {Coupon Amount in Billing currency} as double,",
+				"          {Coupon commission in Billing Currency} as double,",
+				"          {Coupon discount in Billing Currency} as double,",
+				"          {MPA Value in Base currency} as double,",
+				"          IsActive as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SRCCoupon",
+				"SRCCoupon derive(each(match(type == 'string'), $$ = iif(isNull($$) || trim($$) == '','UNK',$$)  ),",
+				"          each(match(type == 'integer'), $$ = coalesce($$,-1))) ~> DerivedCoupon",
+				"DerivedCoupon sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SNKCoupon"
+			]
+		}
+	}
+}

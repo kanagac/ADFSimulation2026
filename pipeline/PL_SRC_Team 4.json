@@ -1,0 +1,43 @@
+{
+	"name": "PL_SRC_Team 4",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_Coupon",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_SRC",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"SRCCoupon": {
+								"filename": "Coupon"
+							},
+							"SNKCoupon": {
+								"filename": "Coupon"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "Simulation Project"
+		},
+		"annotations": []
+	}
+}

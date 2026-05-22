@@ -1,0 +1,27 @@
+{
+	"name": "DS_SRC",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SRC_IN1743",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"filename": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Simulation Project"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": {
+				"value": "@dataset().filename",
+				"type": "Expression"
+			}
+		}
+	}
+}
