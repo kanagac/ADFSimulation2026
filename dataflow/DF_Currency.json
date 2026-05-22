@@ -28,7 +28,7 @@
 			],
 			"scriptLines": [
 				"source(output(",
-				"          {CC Company} as string,",
+				"          {Currency Code} as string,",
 				"          Description as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
