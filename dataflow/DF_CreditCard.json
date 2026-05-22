@@ -9,10 +9,18 @@
 						"referenceName": "DS_SQL_Server_StarAir",
 						"type": "DatasetReference"
 					},
-					"name": "CreditCard"
+					"name": "SourceCreditCard"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DF_Tgt_Blob_StarAir",
+						"type": "DatasetReference"
+					},
+					"name": "TargetCreditCard"
+				}
+			],
 			"transformations": [
 				{
 					"name": "DerivedColumnCreditCard"
@@ -26,8 +34,13 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> CreditCard",
-				"CreditCard derive({type=='string'} = ERROR_FUNCTION('')) ~> DerivedColumnCreditCard"
+				"     format: 'table') ~> SourceCreditCard",
+				"SourceCreditCard derive(each(match(type=='string'), $$ = iif(isNull($$), toString('UNK'), toString($$))),",
+				"          each(match(type=='int'), $$ = coalesce($$,toInteger(0)))) ~> DerivedColumnCreditCard",
+				"DerivedColumnCreditCard sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> TargetCreditCard"
 			]
 		}
 	}
