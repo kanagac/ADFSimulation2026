@@ -1,0 +1,59 @@
+{
+	"name": "DF_AGENT_RAW",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_SERVER",
+						"type": "DatasetReference"
+					},
+					"name": "Source"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "Stage"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Cleansing"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Agent Code} as string,",
+				"          {Agent Name} as string,",
+				"          {Agent Address} as string,",
+				"          {Agent City} as string,",
+				"          {Location Type} as string,",
+				"          {Ctrl location} as string,",
+				"          country as string,",
+				"          City as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Source",
+				"Source derive({Agent Code} = isNull('NA'),",
+				"          {Agent Name} = isNull('NA'),",
+				"          {Agent Address} = isNull('NA'),",
+				"          {Agent City} = isNull('NA'),",
+				"          {Location Type} = isNull('NA'),",
+				"          {Ctrl location} = isNull('NA'),",
+				"          country = isNull('NA'),",
+				"          City = isNull('NA')) ~> Cleansing",
+				"Cleansing sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> Stage"
+			]
+		}
+	}
+}

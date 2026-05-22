@@ -1,0 +1,40 @@
+{
+	"name": "PL_AGENT_RAW",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_AGENT_RAW",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_AGENT_RAW",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"Source": {
+								"Table_Name": "AgentSL"
+							},
+							"Stage": {
+								"File": "AgentSL.csv"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
