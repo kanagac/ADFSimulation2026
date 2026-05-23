@@ -12,7 +12,15 @@
 					"name": "source"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "derivedColumn1"
@@ -54,13 +62,54 @@
 				"          {Ticket Number} = coalesce({Ticket Number},0),",
 				"          {Sales Currency} = coalesce({Sales Currency},'NA'),",
 				"          {Ticket Amount} = coalesce({Ticket Amount}),",
-				"          column5 = ERROR_FUNCTION(''),",
-				"          column6 = ERROR_FUNCTION(''),",
-				"          column7 = ERROR_FUNCTION(''),",
-				"          column8 = ERROR_FUNCTION(''),",
-				"          column9 = ERROR_FUNCTION(''),",
-				"          column10 = ERROR_FUNCTION(''),",
-				"          column11 = ERROR_FUNCTION('')) ~> derivedColumn1"
+				"          {Agent Code} = coalesce({Agent Code},0),",
+				"          {Agent City Code} = coalesce({Agent City Code},'NA'),",
+				"          {Sale Date} = coalesce({Sale Date},toDate('1990-01-01'))  ,",
+				"          {Commission Amount} = coalesce({Commission Amount},0),",
+				"          {Discount Amount} = coalesce({Discount Amount},0),",
+				"          {TAX Amount} = coalesce({TAX Amount},0),",
+				"          {Tax Code 1} = coalesce({Tax Code 1},'NA'),",
+				"          {Tax 1 Amount} = coalesce({Tax 1 Amount},0),",
+				"          {Tax code 2} = coalesce({Tax code 2},'NA'),",
+				"          {Tax 2 Amount} = coalesce({Tax 2 Amount},0),",
+				"          {Tax Code 3} = coalesce({Tax Code 3},'NA'),",
+				"          {Tax 3 Amount} = coalesce({Tax 3 Amount},0),",
+				"          {FOP 1 Code} = coalesce({FOP 1 Code},'NA'),",
+				"          {FOP 1 Amount} = coalesce({FOP 1 Amount},0),",
+				"          {FOP 2} = coalesce({FOP 2},'NA'),",
+				"          {FOP 2 Amount} = coalesce({FOP 2 Amount},0),",
+				"          {FOP 3} = coalesce({FOP 3},'NA'),",
+				"          {FOP 3 Amount} = coalesce({FOP 3 Amount},0),",
+				"          {Flight year Quarter} = coalesce({Flight year Quarter},'NA')) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          {Carrier Code},",
+				"          {Ticket Number},",
+				"          {Sales Currency},",
+				"          {Ticket Amount},",
+				"          {Agent Code},",
+				"          {Agent City Code},",
+				"          {Sale Date},",
+				"          {Commission Amount},",
+				"          {Discount Amount},",
+				"          {TAX Amount},",
+				"          {Tax Code 1},",
+				"          {Tax 1 Amount},",
+				"          {Tax code 2},",
+				"          {Tax 2 Amount},",
+				"          {Tax Code 3},",
+				"          {Tax 3 Amount},",
+				"          {FOP 1 Code},",
+				"          {FOP 1 Amount},",
+				"          {FOP 2},",
+				"          {FOP 2 Amount},",
+				"          {FOP 3},",
+				"          {FOP 3 Amount},",
+				"          {Flight year Quarter}",
+				"     )) ~> sink1"
 			]
 		}
 	}
