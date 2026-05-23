@@ -92,7 +92,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> selectcolumns",
-				"selectcolumns derive(each(match(type=='string'), $$ = coalesce($$, 'NA')),",
+				"selectcolumns derive(each(match(type=='string'), $$ = coalesce($$, 'Unknown')),",
 				"          each(match(type == 'double'), $$ = coalesce($$, 0.0)),",
 				"          each(match(type == 'long'), $$ = coalesce($$, 0)),",
 				"          each(match(type == 'integer'), $$ = coalesce($$, 0)),",
@@ -102,6 +102,7 @@
 				"     partitionFileNames:['sales.csv'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
 				"     outputAssertFailedRows: true,",
 				"     partitionBy('hash', 1)) ~> bronzelocation"
 			]
