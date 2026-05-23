@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "DF_Ticket_Team3",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -18,7 +18,11 @@
 						"referenceName": "DS_CSV",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_BLOB",
+						"type": "LinkedServiceReference"
+					}
 				}
 			],
 			"transformations": [
@@ -46,13 +50,20 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> source1",
-				"source1 select(skipDuplicateMapInputs: true,",
+				"source1 select(partitionBy('hash', 1),",
+				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 derive() ~> derivedColumn1",
+				"select1 derive(each(match(type == 'double'), $$ = coalesce($$,0.0)),",
+				"          each(match(type == 'date'), $$ = coalesce($$, '1900-01-01')),",
+				"          each(match(type == 'string'), $$ = coalesce($$, 'Unknown')),",
+				"          each(match(type == 'long'), $$ = coalesce($$, 0))) ~> derivedColumn1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     partitionFileNames:['Ticket.csv'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true,",
+				"     outputAssertFailedRows: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
 	}
