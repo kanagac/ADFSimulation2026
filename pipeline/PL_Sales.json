@@ -1,0 +1,42 @@
+{
+	"name": "PL_Sales",
+	"properties": {
+		"activities": [
+			{
+				"name": "loading_data_in_bronze",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Sales_team3",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"tablename": "sales"
+							},
+							"bronzelocation": {
+								"container": "bronze",
+								"folder": "Team 3",
+								"filename": "sales.csv"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
