@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Coupon",
+				"name": "Inward",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,8 +16,19 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_Coupon",
-						"type": "DataFlowReference"
+						"referenceName": "DF_Trans_tables",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"SchemaName": "dbo",
+								"TableName": "Inward"
+							},
+							"sink1": {
+								"Container": "bronze",
+								"Directory": "Team 1",
+								"FileName": "Inward.csv"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
