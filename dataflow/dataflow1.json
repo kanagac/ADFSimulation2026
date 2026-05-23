@@ -1,5 +1,5 @@
 {
-	"name": "DF_Carrier_Team3",
+	"name": "dataflow1",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -18,11 +18,7 @@
 						"referenceName": "DS_CSV",
 						"type": "DatasetReference"
 					},
-					"name": "sink1",
-					"rejectedDataLinkedService": {
-						"referenceName": "LS_BLOB",
-						"type": "LinkedServiceReference"
-					}
+					"name": "sink1"
 				}
 			],
 			"transformations": [
@@ -35,12 +31,16 @@
 			],
 			"scriptLines": [
 				"source(output(",
-				"          {Airline Name} as string,",
-				"          {Carrier Code} as string,",
-				"          Len as integer,",
-				"          {Carrier Number} as integer,",
-				"          {Carrier Code Dup} as string,",
-				"          Country as string",
+				"          {Carrier Code} as long,",
+				"          {Ticket Number} as long,",
+				"          {Document type} as string,",
+				"          {Fare Currency} as string,",
+				"          {Ticket amount in Sale currency} as long,",
+				"          {Agent Code} as long,",
+				"          {Agent City Code} as string,",
+				"          {Sale Date} as date,",
+				"          {Commission Amount} as double,",
+				"          {Discount Amount} as double",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
@@ -48,15 +48,11 @@
 				"     format: 'table') ~> source1",
 				"source1 select(skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 derive(each(match(type ==  'string'), $$ = coalesce($$, 'Unknown')),",
-				"          each(match(type == 'integer'), $$ = coalesce($$, 0))) ~> derivedColumn1",
+				"select1 derive() ~> derivedColumn1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     partitionFileNames:['Carrier.csv'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     outputAssertFailedRows: true,",
-				"     partitionBy('hash', 1)) ~> sink1"
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}

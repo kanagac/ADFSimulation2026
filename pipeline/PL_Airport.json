@@ -25,7 +25,7 @@
 							"sink1": {
 								"Container": "bronze",
 								"Directory": "Team 3",
-								"Filename": "Airport"
+								"Filename": "Airport.csv"
 							}
 						}
 					},
