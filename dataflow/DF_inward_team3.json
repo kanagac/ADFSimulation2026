@@ -1,0 +1,97 @@
+{
+	"name": "DF_inward_team3",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "bronzelocation",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_BLOB",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "selectcolumns"
+				},
+				{
+					"name": "nullhandling"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Billed Carrier code} as long,",
+				"          {Carrier code} as long,",
+				"          {Ticket no} as long,",
+				"          {Coupon no} as long,",
+				"          {Billed date} as date,",
+				"          Stage as long,",
+				"          {Billed currency} as string,",
+				"          {Billed coupon amount} as long,",
+				"          {Billed commission amount} as double,",
+				"          {Billed discount amout} as long,",
+				"          {Accepted coupon amount} as double,",
+				"          {Accepted Comission amount} as double,",
+				"          {Accepted discount amount} as double,",
+				"          {Rejected coupon amount} as double,",
+				"          {Rejected commission amount} as double,",
+				"          {Rejected discount amount} as double,",
+				"          IsActive as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'select * from inward \\nwhere [Ticket no] \\nin  \\n( \\nselect [Ticket Number] from sales \\ngroup by [Ticket Number] \\nhaving count(*) =1 \\n) \\n',",
+				"     format: 'query') ~> source1",
+				"source1 select(mapColumn(",
+				"          {Billed Carrier code},",
+				"          {Carrier code},",
+				"          {Ticket no},",
+				"          {Coupon no},",
+				"          {Billed date},",
+				"          Stage,",
+				"          {Billed currency},",
+				"          {Billed coupon amount},",
+				"          {Billed commission amount},",
+				"          {Billed discount amout},",
+				"          {Accepted coupon amount},",
+				"          {Accepted Comission amount},",
+				"          {Accepted discount amount},",
+				"          {Rejected coupon amount},",
+				"          {Rejected commission amount},",
+				"          {Rejected discount amount}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectcolumns",
+				"selectcolumns derive(each(match(type=='string'), $$ = coalesce($$, 'Unknown')),",
+				"          each(match(type == 'double'), $$ = coalesce($$, 0.0)),",
+				"          each(match(type == 'long'), $$ = coalesce($$, 0)),",
+				"          each(match(type == 'integer'), $$ = coalesce($$, 0)),",
+				"          each(match(type == 'date'), $$ = coalesce($$, '1900-01-01'))) ~> nullhandling",
+				"nullhandling sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['inward.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     outputAssertFailedRows: true,",
+				"     partitionBy('hash', 1)) ~> bronzelocation"
+			]
+		}
+	}
+}
