@@ -1,0 +1,72 @@
+{
+	"name": "DF_Coupon",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_TransacTB",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Trans_Tables",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Carrier Code} as long,",
+				"          {Ticket Number} as long,",
+				"          {Coupon Number} as long,",
+				"          {From Airport} as string,",
+				"          {To Airport} as string,",
+				"          {Coupon Status} as string,",
+				"          {Closed Carrier} as string,",
+				"          {Uplift Carrier} as string,",
+				"          {Flight no} as long,",
+				"          {Flight Date} as date,",
+				"          {Class of Travel} as string,",
+				"          {RBD Code} as string,",
+				"          {SPA ID} as string,",
+				"          {Codeshare ID} as string,",
+				"          {Fare Currency Code} as string,",
+				"          {Coupon Amount in Sale currency} as long,",
+				"          {Coupon commission in Sale Currency} as double,",
+				"          {Coupon discount in Sale Currency} as long,",
+				"          {Coupon amount in base currency} as double,",
+				"          {Coupon commission in Base Currency} as double,",
+				"          {Coupon discount in Base Currency} as double,",
+				"          {Coupon Amount in Billing currency} as double,",
+				"          {Coupon commission in Billing Currency} as double,",
+				"          {Coupon discount in Billing Currency} as double,",
+				"          {MPA Value in Base currency} as double,",
+				"          IsActive as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'select * from Coupon \\n\\nwhere [Ticket Number] in \\n\\n( \\n\\nselect [Ticket Number] from sales \\n\\ngroup by [Ticket Number] \\n\\nhaving count(*) =1 \\n\\n) \\n\\nand [carrier code]=888 \\n\\n ',",
+				"     format: 'query') ~> source1",
+				"source1 derive(each(match(type=='string'), $$ = iif(isNull($$),'N/A',$$)),",
+				"          each(match(type=='integer'), $$ = coalesce($$,toInteger(0)))) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}
