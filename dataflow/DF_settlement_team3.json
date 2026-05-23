@@ -1,0 +1,91 @@
+{
+	"name": "DF_settlement_team3",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "bronzelocation",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_BLOB",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "selectcolumns"
+				},
+				{
+					"name": "nullhandling"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Airline No.} as long,",
+				"          {Ticket No.} as long,",
+				"          {Country Code} as string,",
+				"          {Sale Currency Code} as string,",
+				"          {Sale Valu} as long,",
+				"          {Billing Currency Code} as string,",
+				"          {Billing Value} as long,",
+				"          {Card Type} as string,",
+				"          {Invoice No.} as string,",
+				"          {Invoice Date} as timestamp,",
+				"          {Sale/Refund} as string,",
+				"          {Chargeback Date} as double,",
+				"          {Chargeback Amt} as double,",
+				"          IsActive as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'select * from [dbo].[CCDSettlement] \\r\\n\\r\\nwhere [Ticket No.] \\r\\n\\r\\nin  \\r\\n\\r\\n( \\r\\n\\r\\n select [Ticket Number] from sales \\r\\n\\r\\ngroup by [Ticket Number] \\r\\n\\r\\nhaving count(*) =1 \\r\\n\\r\\n) ',",
+				"     format: 'query') ~> source1",
+				"source1 select(mapColumn(",
+				"          Airline_no = {Airline No.},",
+				"          Ticket_no = {Ticket No.},",
+				"          {Country Code},",
+				"          {Sale Currency Code},",
+				"          {Sale Valu},",
+				"          {Billing Currency Code},",
+				"          {Billing Value},",
+				"          {Card Type},",
+				"          Invoice_no = {Invoice No.},",
+				"          {Invoice Date},",
+				"          {Sale/Refund},",
+				"          {Chargeback Date},",
+				"          {Chargeback Amt}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectcolumns",
+				"selectcolumns derive(each(match(type=='string'), $$ = coalesce($$, 'Unknown')),",
+				"          each(match(type == 'double'), $$ = coalesce($$, 0.0)),",
+				"          each(match(type == 'long'), $$ = coalesce($$, 0)),",
+				"          each(match(type == 'integer'), $$ = coalesce($$, 0)),",
+				"          each(match(type == 'date'), $$ = coalesce($$, '1900-01-01'))) ~> nullhandling",
+				"nullhandling sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['settlement.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     outputAssertFailedRows: true,",
+				"     partitionBy('hash', 1)) ~> bronzelocation"
+			]
+		}
+	}
+}
