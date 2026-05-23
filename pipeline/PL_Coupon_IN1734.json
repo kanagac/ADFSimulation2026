@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Inward",
+				"name": "Sales",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -21,12 +21,12 @@
 						"datasetParameters": {
 							"source1": {
 								"SchemaName": "dbo",
-								"TableName": "Inward"
+								"TableName": "Sales"
 							},
 							"sink1": {
 								"Container": "bronze",
 								"Directory": "Team 1",
-								"FileName": "Inward.csv"
+								"FileName": "Sales.csv"
 							}
 						}
 					},
