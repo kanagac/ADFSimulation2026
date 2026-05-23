@@ -48,7 +48,7 @@
 				"     format: 'table') ~> source1",
 				"source1 select(skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 derive(each(match(type == \"string\"), $$ = coalesce($$, \"Unknown\"))) ~> derivedColumn1",
+				"select1 derive(each(match(type == 'string'), $$ = coalesce($$, 'Unknown'))) ~> derivedColumn1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['ExchangeRate.csv'],",
