@@ -1,9 +1,9 @@
 {
-	"name": "PL_inward",
+	"name": "PL_settlement",
 	"properties": {
 		"activities": [
 			{
-				"name": "loading_data_in_bronze",
+				"name": "Loading_data_in_bronze",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -16,16 +16,16 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DF_inward_team3",
+						"referenceName": "DF_settlement_team3",
 						"type": "DataFlowReference",
 						"datasetParameters": {
 							"source1": {
-								"tablename": "inward"
+								"tablename": "ccdsettlement"
 							},
 							"bronzelocation": {
 								"container": "bronze",
 								"folder": "Team 3",
-								"filename": "inward.csv"
+								"filename": "settlement.csv"
 							}
 						}
 					},
