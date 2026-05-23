@@ -1,0 +1,110 @@
+{
+	"name": "DF_Sales_team3",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "bronzelocation",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_BLOB",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "selectcolumns"
+				},
+				{
+					"name": "nullhandling"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Carrier Code} as long,",
+				"          {Ticket Number} as long,",
+				"          {Sales Currency} as string,",
+				"          {Ticket Amount} as long,",
+				"          {Agent Code} as long,",
+				"          {Agent City Code} as string,",
+				"          {Sale Date} as date,",
+				"          {Commission Amount} as double,",
+				"          {Discount Amount} as long,",
+				"          {TAX Amount} as double,",
+				"          {Tax Code 1} as string,",
+				"          {Tax 1 Amount} as double,",
+				"          {Tax code 2} as string,",
+				"          {Tax 2 Amount} as double,",
+				"          {Tax Code 3} as string,",
+				"          {Tax 3 Amount} as double,",
+				"          {FOP 1 Code} as string,",
+				"          {FOP 1 Amount} as double,",
+				"          {FOP 2} as string,",
+				"          {FOP 2 Amount} as double,",
+				"          {FOP 3} as string,",
+				"          {FOP 3 Amount} as double,",
+				"          {Flight year Quarter} as string,",
+				"          IsActive as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'select * from Sales \\n\\nwhere [Ticket Number] in \\n\\n( \\n\\nselect [Ticket Number] from sales \\n\\ngroup by [Ticket Number] \\n\\nhaving count(*) =1 \\n\\n) ',",
+				"     format: 'query') ~> source1",
+				"source1 select(mapColumn(",
+				"          {Carrier Code},",
+				"          {Ticket Number},",
+				"          {Sales Currency},",
+				"          {Ticket Amount},",
+				"          {Agent Code},",
+				"          {Agent City Code},",
+				"          {Sale Date},",
+				"          {Commission Amount},",
+				"          {Discount Amount},",
+				"          {TAX Amount},",
+				"          {Tax Code 1},",
+				"          {Tax 1 Amount},",
+				"          {Tax code 2},",
+				"          {Tax 2 Amount},",
+				"          {Tax Code 3},",
+				"          {Tax 3 Amount},",
+				"          {FOP 1 Code},",
+				"          {FOP 1 Amount},",
+				"          {FOP 2},",
+				"          {FOP 2 Amount},",
+				"          {FOP 3},",
+				"          {FOP 3 Amount},",
+				"          {Flight year Quarter}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectcolumns",
+				"selectcolumns derive(each(match(type=='string'), $$ = coalesce($$, 'NA')),",
+				"          each(match(type == 'double'), $$ = coalesce($$, 0.0)),",
+				"          each(match(type == 'long'), $$ = coalesce($$, 0)),",
+				"          each(match(type == 'integer'), $$ = coalesce($$, 0)),",
+				"          each(match(type == 'date'), $$ = coalesce($$, '1900-01-01'))) ~> nullhandling",
+				"nullhandling sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['sales.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     outputAssertFailedRows: true,",
+				"     partitionBy('hash', 1)) ~> bronzelocation"
+			]
+		}
+	}
+}
