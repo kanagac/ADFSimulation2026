@@ -1,0 +1,75 @@
+{
+	"name": "DF_agent_team3_copy1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "bronzelocation",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_BLOB",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "nullhandling"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Agent Code} as string,",
+				"          {Agent Name} as string,",
+				"          {Agent Address} as string,",
+				"          {Agent City} as string,",
+				"          {Location Type} as string,",
+				"          {Ctrl location} as string,",
+				"          country as string,",
+				"          City as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 derive(each(match(type=='string'), $$ = coalesce($$, 'Unknown')),",
+				"          each(match(type=='double'), $$ = coalesce($$, 0.0)),",
+				"          each(match(type=='long'), $$ = coalesce($$, 0)),",
+				"          each(match(type=='integer'), $$ = coalesce($$, 0)),",
+				"          each(match(type=='date'), $$ = coalesce($$, '1900-01-01')),",
+				"          {Agent Address1} = iif(isNull({Agent Address}) || trim({Agent Address}) == '', 'Unknown', {Agent Address})) ~> nullhandling",
+				"nullhandling sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['agent.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     outputAssertFailedRows: true,",
+				"     mapColumn(",
+				"          {Agent Code},",
+				"          {Agent Name},",
+				"          {Agent City},",
+				"          {Agent Address} = {Agent Address1},",
+				"          {Location Type},",
+				"          {Ctrl location},",
+				"          country,",
+				"          City",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> bronzelocation"
+			]
+		}
+	}
+}
