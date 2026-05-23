@@ -1,0 +1,115 @@
+{
+	"name": "DF_coupon_team3",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "bronzelocation",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_BLOB",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "selectcolumns"
+				},
+				{
+					"name": "nullhandling"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Carrier Code} as long,",
+				"          {Ticket Number} as long,",
+				"          {Coupon Number} as long,",
+				"          {From Airport} as string,",
+				"          {To Airport} as string,",
+				"          {Coupon Status} as string,",
+				"          {Closed Carrier} as string,",
+				"          {Uplift Carrier} as string,",
+				"          {Flight no} as long,",
+				"          {Flight Date} as date,",
+				"          {Class of Travel} as string,",
+				"          {RBD Code} as string,",
+				"          {SPA ID} as string,",
+				"          {Codeshare ID} as string,",
+				"          {Fare Currency Code} as string,",
+				"          {Coupon Amount in Sale currency} as long,",
+				"          {Coupon commission in Sale Currency} as double,",
+				"          {Coupon discount in Sale Currency} as long,",
+				"          {Coupon amount in base currency} as double,",
+				"          {Coupon commission in Base Currency} as double,",
+				"          {Coupon discount in Base Currency} as double,",
+				"          {Coupon Amount in Billing currency} as double,",
+				"          {Coupon commission in Billing Currency} as double,",
+				"          {Coupon discount in Billing Currency} as double,",
+				"          {MPA Value in Base currency} as double,",
+				"          IsActive as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'select * from coupon \\r\\n\\r\\nwhere [Ticket Number] in \\r\\n\\r\\n( \\r\\n\\r\\nselect [Ticket Number] from sales \\r\\n\\r\\ngroup by [Ticket Number] \\r\\n\\r\\nhaving count(*) =1 \\r\\n\\r\\n) \\r\\n\\r\\nand [carrier code]=888 ',",
+				"     format: 'query') ~> source1",
+				"source1 select(mapColumn(",
+				"          {Carrier Code},",
+				"          {Ticket Number},",
+				"          {Coupon Number},",
+				"          {From Airport},",
+				"          {To Airport},",
+				"          {Coupon Status},",
+				"          {Closed Carrier},",
+				"          {Uplift Carrier},",
+				"          {Flight no},",
+				"          {Flight Date},",
+				"          {Class of Travel},",
+				"          {RBD Code},",
+				"          {SPA ID},",
+				"          {Codeshare ID},",
+				"          {Fare Currency Code},",
+				"          {Coupon Amount in Sale currency},",
+				"          {Coupon commission in Sale Currency},",
+				"          {Coupon discount in Sale Currency},",
+				"          {Coupon amount in base currency},",
+				"          {Coupon commission in Base Currency},",
+				"          {Coupon discount in Base Currency},",
+				"          {Coupon Amount in Billing currency},",
+				"          {Coupon commission in Billing Currency},",
+				"          {Coupon discount in Billing Currency},",
+				"          {MPA Value in Base currency}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectcolumns",
+				"selectcolumns derive(each(match(type=='string'), $$ = coalesce($$, 'Unknown')),",
+				"          each(match(type == 'double'), $$ = coalesce($$, 0.0)),",
+				"          each(match(type == 'long'), $$ = coalesce($$, 0)),",
+				"          each(match(type == 'integer'), $$ = coalesce($$, 0)),",
+				"          each(match(type == 'date'), $$ = coalesce($$, '1900-01-01'))) ~> nullhandling",
+				"nullhandling sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['coupon.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     outputAssertFailedRows: true,",
+				"     partitionBy('hash', 1)) ~> bronzelocation"
+			]
+		}
+	}
+}
