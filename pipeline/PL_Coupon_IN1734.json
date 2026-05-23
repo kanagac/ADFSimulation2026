@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Sales",
+				"name": "Uplift",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -21,12 +21,12 @@
 						"datasetParameters": {
 							"source1": {
 								"SchemaName": "dbo",
-								"TableName": "Sales"
+								"TableName": "Uplift"
 							},
 							"sink1": {
 								"Container": "bronze",
 								"Directory": "Team 1",
-								"FileName": "Sales.csv"
+								"FileName": "Uplift.csv"
 							}
 						}
 					},
