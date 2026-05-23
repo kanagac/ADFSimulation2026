@@ -1,0 +1,80 @@
+{
+	"name": "DF_Flightmaster_Team3",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQLSERVER",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_CSV",
+						"type": "DatasetReference"
+					},
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_BLOB",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Flight_no as string,",
+				"          {Flight date} as string,",
+				"          {Frm Airport Code} as string,",
+				"          {To Airport Code} as string,",
+				"          {Flight Type} as string,",
+				"          {Flight Status} as string,",
+				"          First as string,",
+				"          Business as string,",
+				"          Economy as string,",
+				"          Tail_no as string,",
+				"          Carrier as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
+				"source1 select(mapColumn(",
+				"          Flight_no,",
+				"          {Flight date},",
+				"          {Frm Airport Code},",
+				"          {To Airport Code},",
+				"          {Flight Type},",
+				"          {Flight Status},",
+				"          First,",
+				"          Business,",
+				"          Economy,",
+				"          Tail_no,",
+				"          Carrier",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 derive(each(match(type == \"string\"), $$ = coalesce($$, \"Unknown\"))) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['Flight.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     outputAssertFailedRows: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}
