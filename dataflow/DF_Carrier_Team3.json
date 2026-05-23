@@ -48,13 +48,14 @@
 				"     format: 'table') ~> source1",
 				"source1 select(skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 derive(each(match(type == \"string\"), $$ = coalesce($$, \"Unknown\")),",
-				"          each(match(type == \"integer\"), $$ = coalesce($$, 0))) ~> derivedColumn1",
+				"select1 derive(each(match(type ==  'string'), $$ = coalesce($$, \"Unknown\")),",
+				"          each(match(type == 'integer'), $$ = coalesce($$, 0))) ~> derivedColumn1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['Carrier.csv'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     outputAssertFailedRows: true,",
 				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
