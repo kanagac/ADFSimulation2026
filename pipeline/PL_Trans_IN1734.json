@@ -1,9 +1,9 @@
 {
-	"name": "PL_Coupon_IN1734",
+	"name": "PL_Trans_IN1734",
 	"properties": {
 		"activities": [
 			{
-				"name": "Uplift",
+				"name": "CCDSettlement",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -21,12 +21,12 @@
 						"datasetParameters": {
 							"source1": {
 								"SchemaName": "dbo",
-								"TableName": "Uplift"
+								"TableName": "CCDSettlement"
 							},
 							"sink1": {
 								"Container": "bronze",
 								"Directory": "Team 1",
-								"FileName": "Uplift.csv"
+								"FileName": "CCDSettlement.csv"
 							}
 						}
 					},
