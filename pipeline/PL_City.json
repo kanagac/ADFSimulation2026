@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "Loading_data_in_bronze",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
